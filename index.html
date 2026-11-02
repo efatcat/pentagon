@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pentagon — 5Architecture</title>
+
+<!-- Favicon: тот же файл, что и логотип -->
+<link rel="icon" type="image/svg+xml" href="https://efatcat.github.io/pentagon/Pentagon.svg">
+<link rel="alternate icon" href="https://efatcat.github.io/pentagon/Pentagon.svg">
+<link rel="apple-touch-icon" href="https://efatcat.github.io/pentagon/Pentagon.svg">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --bg: #000;
+    --fg: #fff;
+    --muted: #888;
+    --line: rgba(255, 255, 255, 0.12);
+    --border: rgba(255, 255, 255, 0.35);
+    --border-soft: rgba(255, 255, 255, 0.25);
+    --frame-line: rgba(255, 255, 255, 0.12);
+    --corner: #fff;
+  }
+
+  /* Тема при открытом маскоте — белая */
+  body.mascot-theme {
+    --bg: #fff;
+    --fg: #000;
+    --muted: #666;
+    --line: rgba(0, 0, 0, 0.12);
+    --border: rgba(0, 0, 0, 0.35);
+    --border-soft: rgba(0, 0, 0, 0.25);
+    --frame-line: rgba(0, 0, 0, 0.12);
+    --corner: #000;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: 'Unbounded', 'Helvetica Neue', Arial, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    padding: 2rem;
+    transition: background-color 0.45s ease, color 0.45s ease;
+  }
+
+  .hub {
+    width: 100%;
+    max-width: 520px;
+    text-align: center;
+    position: relative;
+  }
+
+  /* Переключатель языка */
+  .lang-switch {
+    position: fixed;
+    top: 40px;
+    right: 40px;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+    animation: fadeUp 1.2s ease-out both;
+  }
+
+  .lang-btn {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border-soft);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    font-family: inherit;
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .lang-btn:hover {
+    color: var(--fg);
+    border-color: var(--fg);
+  }
+
+  .lang-btn.active {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+
+  /* Логотип игры — кликабельный */
+  .logo {
+    width: clamp(60px, 9vw, 96px);
+    height: auto;
+    margin: 0 auto 1.5rem;
+    display: block;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition: transform 0.25s ease, filter 0.25s ease;
+    animation: fadeUp 1.2s ease-out both;
+  }
+
+  .logo:hover {
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.35));
+  }
+
+  body.mascot-theme .logo:hover {
+    filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.35));
+  }
+
+  .logo:active {
+    transform: scale(0.96);
+  }
+
+  /* Название игры */
+  .game-title {
+    font-size: clamp(2.2rem, 8vw, 4.5rem);
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--fg);
+    animation: fadeUp 1.2s ease-out 0.15s both;
+  }
+
+  .tagline {
+    margin-top: 1rem;
+    font-size: clamp(0.6rem, 1.4vw, 0.8rem);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 300;
+    animation: fadeUp 1.2s ease-out 0.3s both;
+  }
+
+  /* Кнопки версий */
+  .menu {
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    animation: fadeUp 1.2s ease-out 0.45s both;
+  }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .btn:hover,
+  .btn:focus {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+    outline: none;
+  }
+
+  .btn.primary {
+    border-color: var(--fg);
+  }
+
+  .btn .label {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+    text-align: left;
+  }
+
+  .btn .name {
+    font-weight: 500;
+  }
+
+  .btn .index {
+    font-size: 0.6rem;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color 0.25s ease;
+  }
+
+  .btn:hover .index,
+  .btn:focus .index {
+    color: inherit;
+    opacity: 0.6;
+  }
+
+  .btn .badge {
+    flex-shrink: 0;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .btn:hover .badge,
+  .btn:focus .badge {
+    border-color: var(--bg);
+    color: var(--bg);
+  }
+
+  .btn .badge.test {
+    border-color: var(--fg);
+    color: var(--fg);
+  }
+
+  .btn:hover .badge.test,
+  .btn:focus .badge.test {
+    border-color: var(--bg);
+    color: var(--bg);
+  }
+
+  /* Подвал — студия */
+  .footer {
+    margin-top: 2.5rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 300;
+    animation: fadeUp 1.2s ease-out 0.6s both;
+  }
+
+  .footer .studio {
+    color: var(--fg);
+    font-weight: 700;
+  }
+
+  .footer .divider {
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--border-soft);
+    margin: 0 auto 1rem;
+  }
+
+  /* Тонкая рамка */
+  .frame {
+    position: fixed;
+    inset: 20px;
+    border: 1px solid var(--frame-line);
+    pointer-events: none;
+    z-index: 1;
+    transition: border-color 0.45s ease;
+  }
+
+  /* Уголки */
+  .corner {
+    position: fixed;
+    width: 32px;
+    height: 32px;
+    border-color: var(--corner);
+    border-style: solid;
+    opacity: 0.5;
+    z-index: 1;
+    transition: border-color 0.45s ease;
+  }
+  .corner.tl { top: 40px; left: 40px; border-width: 1px 0 0 1px; }
+  .corner.tr { top: 40px; right: 40px; border-width: 1px 1px 0 0; }
+  .corner.bl { bottom: 40px; left: 40px; border-width: 0 0 1px 1px; }
+  .corner.br { bottom: 40px; right: 40px; border-width: 0 1px 1px 0; }
+
+  /* ===== ПОЛНОЭКРАННОЕ ОКНО С ПАСХАЛКОЙ ===== */
+  .mascot-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.45s ease, visibility 0.45s ease, background-color 0.45s ease;
+  }
+
+  .mascot-overlay.open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .mascot-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    max-width: 640px;
+    width: 100%;
+    padding: 2rem;
+    text-align: center;
+    transform: translateY(30px) scale(0.95);
+    opacity: 0;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+                opacity 0.5s ease 0.1s;
+  }
+
+  .mascot-overlay.open .mascot-card {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  .mascot-figure {
+    position: relative;
+    width: min(52vw, 280px);
+    height: min(52vw, 280px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mascot-figure::before {
+    content: '';
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0) 70%);
+    pointer-events: none;
+  }
+
+  .mascot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 30px rgba(0, 0, 0, 0.15));
+    animation: mascotFloat 4s ease-in-out infinite;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  @keyframes mascotFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+
+  .mascot-name {
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fg);
+  }
+
+  .mascot-desc {
+    max-width: 480px;
+    font-size: clamp(0.62rem, 1.25vw, 0.78rem);
+    font-weight: 300;
+    line-height: 1.9;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+  }
+
+  .mascot-desc strong {
+    color: var(--fg);
+    font-weight: 700;
+  }
+
+  .mascot-close {
+    margin-top: 0.5rem;
+    padding: 0.8rem 2rem;
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .mascot-close:hover {
+    background: var(--fg);
+    color: var(--bg);
+    border-color: var(--fg);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 520px) {
+    .lang-switch {
+      top: 28px;
+      right: 28px;
+    }
+    .menu { margin-top: 2rem; }
+    .btn { padding: 0.85rem 1.1rem; font-size: 0.7rem; }
+    .footer { margin-top: 2rem; }
+    .mascot-figure {
+      width: min(64vw, 220px);
+      height: min(64vw, 220px);
+    }
+    .mascot-card { gap: 1.2rem; padding: 1.5rem; }
+  }
+
+  @media (max-width: 400px) {
+    .btn .badge { display: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+
+  <!-- Переключатель языка -->
+  <div class="lang-switch">
+    <button class="lang-btn active" data-lang="ru">RU</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+  </div>
+
+  <main class="hub">
+    <!-- Логотип игры — кликабельный, открывает маскота -->
+    <img
+      class="logo"
+      id="gameLogo"
+      src="https://efatcat.github.io/pentagon/Pentagon.svg"
+      alt="Pentagon logo"
+      title="Нажми на логотип…"
+    />
+
+    <!-- Название игры -->
+    <h1 class="game-title">Pentagon</h1>
+    <p class="tagline" data-i18n="tagline">Платформер-наследник Qubes и Amber Run</p>
+
+    <!-- Версии игры: от новых к старым -->
+    <nav class="menu" aria-label="Версии игры">
+      <a
+        href="https://efatcat.github.io/pentagon/1pr13"
+        class="btn primary"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="label">
+          <span class="name" data-i18n="v1pr13">Pentagon 1.PR13</span>
+          <span class="index">1.PR13</span>
+        </span>
+        <span class="badge">New</span>
+      </a>
+
+      <a
+        href="https://efatcat.github.io/1pr13lite"
+        class="btn"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="label">
+          <span class="name" data-i18n="v1pr13lite">Pentagon 1.PR13 Lite</span>
+          <span class="index">1.PR13.E1</span>
+        </span>
+        <span class="badge">Lite</span>
+      </a>
+
+      <a
+        href="https://efatcat.github.io/pentagon40"
+        class="btn"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="label">
+          <span class="name" data-i18n="v40">Pentagon40 Test Drive</span>
+          <span class="index">0.PR1</span>
+        </span>
+        <span class="badge test" data-i18n="badge-test">Тест</span>
+      </a>
+    </nav>
+
+    <!-- Студия -->
+    <footer class="footer">
+      <span class="divider"></span>
+      <span data-i18n="footer-prefix">Разработано</span>
+      <span class="studio">5Architecture</span>
+    </footer>
+  </main>
+
+  <!-- ===== ПОЛНОЭКРАННАЯ ПАСХАЛКА: PENTAGON-CHAN ===== -->
+  <div class="mascot-overlay" id="mascotOverlay" role="dialog" aria-modal="true" aria-labelledby="mascotName">
+    <div class="mascot-card">
+      <div class="mascot-figure">
+        <img
+          class="mascot-img"
+          src="https://efatcat.github.io/pentagon/pentagonchan.svg"
+          alt="Pentagon-Chan"
+          onerror="this.style.display='none'"
+        />
+      </div>
+
+      <h2 class="mascot-name" id="mascotName">Pentagon-Chan</h2>
+
+      <p class="mascot-desc" data-i18n="mascot-desc">
+        Pentagon-Chan — официальный маскот игры <strong>Pentagon</strong>, созданный студией <strong>5Architecture</strong>.
+      </p>
+
+      <button class="mascot-close" id="mascotClose" data-i18n="mascot-close">Закрыть</button>
+    </div>
+  </div>
+
+  <script>
+    const translations = {
+      ru: {
+        tagline: 'Платформер-наследник Qubes и Amber Run',
+        v40: 'Pentagon40 Test Drive',
+        'badge-test': 'Тест',
+        v1pr13lite: 'Pentagon 1.PR13 Lite',
+        v1pr13: 'Pentagon 1.PR13',
+        'footer-prefix': 'Разработано',
+        'mascot-desc': 'Pentagon-Chan — официальный маскот игры Pentagon, созданный студией 5Architecture.',
+        'mascot-close': 'Закрыть'
+      },
+      en: {
+        tagline: 'Platformer successor to Qubes and Amber Run',
+        v40: 'Pentagon40 Test Drive',
+        'badge-test': 'Test',
+        v1pr13lite: 'Pentagon 1.PR13 Lite',
+        v1pr13: 'Pentagon 1.PR13',
+        'footer-prefix': 'Developed by',
+        'mascot-desc': 'Pentagon-Chan is the official mascot of Pentagon, created by 5Architecture.',
+        'mascot-close': 'Close'
+      }
+    };
+
+    const langButtons = document.querySelectorAll('.lang-btn');
+    const i18nElements = document.querySelectorAll('[data-i18n]');
+
+    function setLanguage(lang) {
+      const dict = translations[lang];
+      if (!dict) return;
+
+      i18nElements.forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] !== undefined) {
+          el.textContent = dict[key];
+        }
+      });
+
+      document.documentElement.lang = lang;
+
+      langButtons.forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+
+      try {
+        localStorage.setItem('pentagon-lang', lang);
+      } catch (e) {}
+    }
+
+    langButtons.forEach(btn => {
+      btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+    });
+
+    // Восстановление языка
+    let savedLang = 'ru';
+    try {
+      savedLang = localStorage.getItem('pentagon-lang') || 'ru';
+    } catch (e) {}
+    setLanguage(savedLang);
+
+    // ===== ПАСХАЛКА: ОТКРЫТИЕ/ЗАКРЫТИЕ С ИНВЕРСИЕЙ ТЕМЫ =====
+    const logo = document.getElementById('gameLogo');
+    const overlay = document.getElementById('mascotOverlay');
+    const closeBtn = document.getElementById('mascotClose');
+
+    function openMascot() {
+      document.body.classList.add('mascot-theme'); // белая тема
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMascot() {
+      overlay.classList.remove('open');
+      document.body.classList.remove('mascot-theme'); // обратно чёрная
+      document.body.style.overflow = '';
+    }
+
+    if (logo && overlay) {
+      logo.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openMascot();
+      });
+
+      closeBtn.addEventListener('click', closeMascot);
+
+      // Клик по фону вне карточки закрывает
+      overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+          closeMascot();
+        }
+      });
+
+      // Esc закрывает
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('open')) {
+          closeMascot();
+        }
+      });
+    }
+  </script>
+</body>
+</html>
