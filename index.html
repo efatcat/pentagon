@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-<title>Pentagon Game / Платформер Пентагон</title>
+<title>Pentagon Game / Платформер Пентагон / Пентагон40 / Pentagon40</title>
 <link id="pentagonIcon" rel="icon" type="image/svg+xml" href="Pentagon.svg">
 <script>window.addEventListener('DOMContentLoaded',()=>{const fallback='https://efatcat.github.io/pentagon/Pentagon.svg';const probe=new Image();probe.onerror=()=>{document.getElementById('pentagonIcon').href=fallback};probe.src='Pentagon.svg'});</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -158,7 +158,7 @@ h2{font-family:Unbounded;font-weight:900;font-size:clamp(34px,7vw,60px);color:va
 <!-- УРОВНИ -->
 <div class="ov" id="levelsOv"><div class="panel" style="width:min(94vw,720px)">
   <h3>КАМПАНИЯ · 14 УРОВНЕЙ</h3>
-  <p class="tag" style="font-size:12px">Каждый уровень — 20 платформ. Глава II: выдвижные мосты, две фазы, зарядные плиты, лифты и эхо-шаг. E — фаза · Q — опора в воздухе. Удерживай прыжок для полной высоты.</p>
+  <p class="tag" style="font-size:12px">Каждый уровень — 20 платформ. Глава II: выдвижные мосты, две фазы, зарядные плиты, лифты и Облако-шаг. E — фаза · Q — опора в воздухе. Удерживай прыжок для полной высоты.</p>
   <div class="lgrid" id="lgrid"></div>
   <div class="hintline">★ пройти · ★ все Пентагоны · ★ уложиться в целевое время</div>
   <div class="row"><button class="btn sec" data-go="menu">← НАЗАД</button></div>
@@ -401,6 +401,8 @@ CAT.pants.push(['track','Спортивные брюки',45],['formal','Кла�
 for(const items of Object.values(CAT))for(const item of items){if(item[2]>0)item[2]=Math.ceil(item[2]*1.2);else if(item[0]!=='none')item[2]=5}
 for(const items of Object.values(CAT))for(const item of items)if(item[2]>0)item[2]=Math.max(1,Math.round(item[2]*.95));
 for(const item of CAT.shirt)if(['stripes','num','star'].includes(item[0]))item[2]=0;
+for(const item of CAT.face)if(['smile','grin'].includes(item[0]))item[2]=0;
+for(const item of CAT.hat)if(item[0]==='cap')item[2]=0;
 if(skin.back==='pack')skin.back='none';
 skin.hairColor=skin.hairColor||skin.acc;
 skin.accessory='none';if(skin.hat==='wizard')skin.hat='none';skin.hair=skin.hair||'none';
@@ -570,11 +572,11 @@ LEVELS.push(
  {name:'Сад живой линии',theme:'dusk',par:38,tip:'Зелёный мост выдвигается вправо, пока стоишь на нём. Дождись раскрытия, подойди к новому краю и прыгай. Размер персонажа не меняется.',spec:[[80,-30,120,'go'],[100,-60,170,'g'],[85,80,110,'g3'],[120,-20,220,'p'],[90,-90,150,'g'],[110,-30,130,'g'],[100,100,180,'go'],[160,-50,260,'']]},
  {name:'Две стороны тишины',theme:'neon',par:42,tip:'E — сменить фазу. Голубые плиты твёрдые в фазе I, розовые — в фазе II. Переключайся в прыжке.',spec:[[90,0,170,'uo'],[100,-50,180,'z'],[100,40,180,'u3'],[110,-30,240,'p'],[120,-70,170,'z'],[120,60,160,'u'],[100,-50,170,'z3'],[140,20,260,'']]},
  {name:'Тихий аккумулятор',theme:'night',par:42,tip:'На янтарной плите стой неподвижно, чтобы накопить высоту прыжка. Полная зарядка — за 0,9 секунды.',spec:[[90,0,170,'qo'],[110,-240,200,'3'],[90,30,200,'p'],[110,-20,150,'q'],[100,-260,180,'o'],[90,70,180,'q'],[110,-220,220,'p3'],[130,30,260,'']]},
- {name:'Шаг в пустоте',theme:'night',par:38,tip:'Q в воздухе создаёт под ногами одноразовую эхо-опору на 1,4 секунды. Настоящая платформа восстанавливает заряд.',spec:[[110,-30,190,'o'],[340,0,200,'3p'],[110,-60,150,'c'],[360,20,200,'op'],[320,-30,180,'3'],[110,20,180,'c'],[350,0,260,'']]},
+ {name:'Шаг в пустоте',theme:'night',par:38,tip:'Q в воздухе создаёт под ногами одноразовую Облако-опору на 1,4 секунды. Настоящая платформа восстанавливает заряд.',spec:[[110,-30,190,'o'],[340,0,200,'3p'],[110,-60,150,'c'],[360,20,200,'op'],[320,-30,180,'3'],[110,20,180,'c'],[350,0,260,'']]},
  {name:'Лифт дыхания',theme:'ice',par:40,tip:'Серебряная платформа поднимается, пока ты на ней стоишь, и опускается без тебя. Поднимись, затем прыгай.',spec:[[90,0,180,'lo'],[100,-280,200,'p3'],[100,30,160,'l'],[110,-260,200,'o'],[90,40,170,'l'],[100,-280,220,'p'],[120,30,260,'']]},
  {name:'Хореография фаз',theme:'neon',par:48,tip:'Соедини заряд и смену фаз: заряди прыжок на янтарной плите и переключи E перед приземлением.',spec:[[90,0,180,'q'],[100,-250,190,'z3'],[110,60,220,'p'],[90,-30,170,'u'],[100,20,160,'q'],[110,-240,180,'z'],[110,40,170,'u3'],[120,40,230,'p'],[100,-30,160,'z'],[140,0,260,'']]},
- {name:'Оранжерея над бездной',theme:'desert',par:48,tip:'Выдвижные мосты, лифт и эхо-опора: постой на зелёной плите для удлинения; Q поможет пересечь трещину.',spec:[[90,-30,160,'g'],[110,-40,180,'go'],[90,20,170,'l'],[100,-260,220,'p3'],[110,50,150,'g'],[110,-50,160,'g'],[340,20,220,'p'],[100,-30,150,'g3'],[120,10,260,'']]},
- {name:'Симфония новой линии',theme:'lava',par:65,tip:'Финал второй главы. E — фаза, Q — эхо. На чекпоинтах заряд эха восстанавливается, как и на других настоящих опорах.',spec:[[90,0,170,'q'],[110,-250,180,'z3'],[100,50,220,'p'],[100,-40,160,'g'],[110,-30,160,'u'],[330,20,220,'p'],[100,0,170,'l'],[110,-270,190,'z'],[100,50,230,'p3'],[110,-30,140,'c'],[100,0,170,'q'],[110,-240,180,'u3'],[140,40,260,'']]}
+ {name:'Оранжерея над бездной',theme:'desert',par:48,tip:'Выдвижные мосты, лифт и Облако-опора: постой на зелёной плите для удлинения; Q поможет пересечь трещину.',spec:[[90,-30,160,'g'],[110,-40,180,'go'],[90,20,170,'l'],[100,-260,220,'p3'],[110,50,150,'g'],[110,-50,160,'g'],[340,20,220,'p'],[100,-30,150,'g3'],[120,10,260,'']]},
+ {name:'Симфония новой линии',theme:'lava',par:65,tip:'Финал второй главы. E — фаза, Q — Облако. На чекпоинтах заряд эха восстанавливается, как и на других настоящих опорах.',spec:[[90,0,170,'q'],[110,-250,180,'z3'],[100,50,220,'p'],[100,-40,160,'g'],[110,-30,160,'u'],[330,20,220,'p'],[100,0,170,'l'],[110,-270,190,'z'],[100,50,230,'p3'],[110,-30,140,'c'],[100,0,170,'q'],[110,-240,180,'u3'],[140,40,260,'']]}
 );
 
 // Индивидуальные дополнительные секции перед финишем; старт входит в 20 платформ.
@@ -601,12 +603,12 @@ let state='menu',cfg=null,seed=0,rng=Math.random,len=40,silent=false;
 let platforms=[],coins=[],currentIdx=0,cpIdx=0,runCoins=0,totalCoins=0;
 let time=0,falls=0,T=0,gt=0,sh=0,camX=0,camY=0;
 const parts=[];let stepTimer=0;
-let phase=0,echo=null,echoReady=true;
+let phase=0,Evolution=null,EvolutionReady=true;
 function solid(p){return !((p.t==='phase0'&&phase!==0)||(p.t==='phase1'&&phase!==1))}
 function usePower(kind){
- if(state!=='play'||!['camp','echo'].includes(cfg.mode))return;
+ if(state!=='play'||!['camp','Evolution'].includes(cfg.mode))return;
  if(kind==='phase'){phase=1-phase;S.mat();toast('Фаза '+(phase?'II · розовая':'I · голубая'));if(player.on&&!solid(player.on)){player.on=null;player.grounded=false;player.coyote=0}}
- if(kind==='echo'&&!player.grounded&&echoReady){echoReady=false;echo={x:player.x-55,y:player.y+18,w:110,life:1.4};S.mat();sparkle(echo.x,echo.y,echo.w,'170,220,255')}
+ if(kind==='Evolution'&&!player.grounded&&EvolutionReady){EvolutionReady=false;Evolution={x:player.x-55,y:player.y+18,w:110,life:1.4};S.mat();sparkle(Evolution.x,Evolution.y,Evolution.w,'170,220,255')}
 }
 const player={x:0,y:0,vx:0,vy:0,sx:1,sy:1,face:1,grounded:false,coyote:0,jbuf:0,inv:0,blinkT:3,run:0,on:null};
 
@@ -669,7 +671,7 @@ function genProc(){
   if(fin)w=260;
   const cr=rng();if(cr<.28)o.coin=rng()<.2?3:1;else if(cr<.48)o.arc=1;
   if(i%10===0&&!fin)o.cp=1;
-  if(cfg.mode==='echo'&&!fin&&i>2){
+  if(cfg.mode==='Evolution'&&!fin&&i>2){
     const r=rng();
     if(r<.18)t='grow';else if(r<.34)t='charge';else if(r<.49)t='lift';else if(r<.64)t='phase0';else if(r<.79)t='phase1';
     if(['grow','charge','lift','phase0','phase1'].includes(t)){o.mx=0;o.my=0;gap=Math.min(gap,120);dy=clamp(dy,-65,75);w=Math.max(w,150)}
@@ -678,11 +680,13 @@ function genProc(){
     if(o.cp)t='n';
   }
   place(gap,dy,w,t,o);
+  // Бесконечный режим: платформы позади удаляются, но монеты остаются в счётчике.
+  if(!len&&i>90){platforms[i-90].gone=true;coins=coins.filter(c=>(c.pi>=0?c.pi:c.vp)>=i-90)}
 }
 
 function startRun(c){
   if(c.mode==='tower')c=Object.assign({},c,{len:0,silent:false});
-  cfg=c;parts.length=0;platforms=[];coins=[];phase=0;echo=null;echoReady=true;
+  cfg=c;parts.length=0;platforms=[];coins=[];phase=0;Evolution=null;EvolutionReady=true;
   currentIdx=0;cpIdx=0;time=0;falls=0;runCoins=0;gt=0;
   if(c.mode==='camp'){
     const L=LEVELS[c.level];silent=!!L.silent;seed=hashStr(L.name);TH=THEMES[L.theme];buildCampaign(L);len=platforms.length;
@@ -693,7 +697,7 @@ function startRun(c){
   totalCoins=coins.length;buildSky();
   spawnAt(0);camX=c.mode==='tower'?260:player.x+70;camY=player.y-60;
   $('lvlName').textContent=c.mode==='camp'?(c.level+1)+'. '+LEVELS[c.level].name:c.mode==='daily'?'ЕЖЕДНЕВНЫЙ ВЫЗОВ':len?'МИР SL-'+seed.toString(36).toUpperCase():'БЕСКОНЕЧНЫЙ';
-  if(c.mode==='echo')$('lvlName').textContent='PENTAGON ECHO · SL-'+seed.toString(36).toUpperCase();
+  if(c.mode==='Evolution')$('lvlName').textContent='PENTAGON Evolution · SL-'+seed.toString(36).toUpperCase();
   if(c.mode==='tower')$('lvlName').textContent='БАШНЯ · ВВЕРХ БЕЗ КОНЦА';
   $('silentTag').style.display=silent?'block':'none';
   $('fLbl').textContent=len?'ПАДЕНИЯ':'РЕКОРД';
@@ -734,7 +738,7 @@ function die(){
   if(!len){gameOver();return}
   falls++;
   platforms.forEach(p=>{if(p.t==='crumble'){p.cr=0;p.gone=false;p.fall=0}});
-  echo=null;echoReady=true;phase=platforms[cpIdx].t==='phase1'?1:0;
+  Evolution=null;EvolutionReady=true;phase=platforms[cpIdx].t==='phase1'?1:0;
   currentIdx=cpIdx;spawnAt(cpIdx);camX=player.x;camY=player.y-60;updHUD();
 }
 function gameOver(){
@@ -796,9 +800,9 @@ function renderLevels(){
   });
 }
 let procLen=40;
-const echoBtn=document.createElement('button');echoBtn.className='btn sec';echoBtn.textContent='PENTAGON ECHO';$('procPlay').after(echoBtn);
-const echoHint=document.createElement('p');echoHint.className='hintline';echoHint.textContent='Echo: фазовые плиты, заряд, лифты и мосты. E — фаза · Q — эхо-опора. Обычный мир и Башня используют только классические блоки.';echoBtn.after(echoHint);
-echoBtn.onclick=()=>{wakeAudio();play({mode:'echo',seed:parseSeed($('seedIn').value),len:procLen,silent:$('silentChk').checked});toast('Pentagon Echo · E: фаза · Q: эхо-опора')};
+const EvolutionBtn=document.createElement('button');EvolutionBtn.className='btn sec';EvolutionBtn.textContent='PENTAGON Evolution';$('procPlay').after(EvolutionBtn);
+const EvolutionHint=document.createElement('p');EvolutionHint.className='hintline';EvolutionHint.textContent='Evolution: фазовые плиты, заряд, лифты и мосты. E — фаза · Q — Облако-опора. Обычный мир и Башня используют только классические блоки.';EvolutionBtn.after(EvolutionHint);
+EvolutionBtn.onclick=()=>{wakeAudio();play({mode:'Evolution',seed:parseSeed($('seedIn').value),len:procLen,silent:$('silentChk').checked});toast('Pentagon Evolution · E: фаза · Q: Облако-опора')};
 document.querySelectorAll('#lenSeg button').forEach(b=>b.onclick=()=>{procLen=+b.dataset.len;document.querySelectorAll('#lenSeg button').forEach(x=>x.classList.toggle('sel',x===b));S.click()});
 function parseSeed(s){s=s.trim();if(!s)return(Math.random()*0x7fffffff)|0;const m=s.match(/^SL-([0-9A-Z]+)$/i);if(m){const v=parseInt(m[1],36);if(isFinite(v))return v>>>0}return hashStr(s.toUpperCase())}
 const towerBtn=document.createElement('button');towerBtn.className='btn';towerBtn.textContent='БАШНЯ · БЕСКОНЕЧНО ВВЕРХ';$('procPlay').after(towerBtn);
@@ -897,7 +901,7 @@ addEventListener('keydown',e=>{
   if(e.repeat)return;keys[e.code]=1;wakeAudio();
   if(JUMP_KEYS.includes(e.code))player.jbuf=JBUF;
   if(e.code==='KeyE')usePower('phase');
-  if(e.code==='KeyQ')usePower('echo');
+  if(e.code==='KeyQ')usePower('Evolution');
   if(e.code==='KeyM')toggleMute();
   if(e.code==='KeyP'||e.code==='Escape')togglePause();
   if(e.code==='KeyR'&&(state==='play'||state==='pause'))retry();
@@ -911,21 +915,21 @@ function bindTouch(el,on,off){
 }
 bindTouch($('tL'),()=>tL=true,()=>tL=false);bindTouch($('tR'),()=>tR=true,()=>tR=false);
 bindTouch($('tJ'),()=>{tJ=true;player.jbuf=JBUF},()=>{tJ=false});
-bindTouch($('tE'),()=>usePower('phase'),()=>{});bindTouch($('tQ'),()=>usePower('echo'),()=>{});
+bindTouch($('tE'),()=>usePower('phase'),()=>{});bindTouch($('tQ'),()=>usePower('Evolution'),()=>{});
 function toggleMute(){muted=!muted;$('muteBtn').classList.toggle('off',muted)}
 $('muteBtn').addEventListener('click',function(){wakeAudio();toggleMute();this.blur()});
 
 /* ============ физика ============ */
 function update(dt){
   gt+=dt;
-  if(echo){echo.life-=dt;if(echo.life<=0)echo=null}
+  if(Evolution){Evolution.life-=dt;if(Evolution.life<=0)Evolution=null}
   for(const p of platforms){
-    if(cfg.mode==='tower'&&p.i<currentIdx-90)continue;
+    if(p.gone||p.i<currentIdx-90)continue;
     if(p.t==='grow'){p.growth=clamp(p.growth+(player.on===p?dt*1.6:-dt*.5),0,1);p.w=p.baseWidth+90*p.growth}
     if(p.t==='charge')p.charge=player.on===p&&Math.abs(player.vx)<35?Math.min(1,p.charge+dt/ .9):Math.max(0,p.charge-dt*2);
     if(p.t==='lift'){const ny=clamp(p.y+(player.on===p?-170:100)*dt,p.by-260,p.by);p.dy=ny-p.y;p.y=ny;p.dx=0}
   }
-  for(const p of platforms)if(p.t==='move'&&!(cfg.mode==='tower'&&p.i<currentIdx-90)){const s=Math.sin(gt*p.ms+p.ph),nx=p.bx+s*p.mx,ny=p.by+s*p.my;p.dx=nx-p.x;p.dy=ny-p.y;p.x=nx;p.y=ny}
+  for(const p of platforms)if(p.t==='move'&&!p.gone&&p.i>=currentIdx-90){const s=Math.sin(gt*p.ms+p.ph),nx=p.bx+s*p.mx,ny=p.by+s*p.my;p.dx=nx-p.x;p.dy=ny-p.y;p.x=nx;p.y=ny}
   if(player.grounded&&player.on&&(player.on.t==='move'||player.on.t==='lift')){player.x+=player.on.dx;player.y+=player.on.dy}
   if(!len)while(platforms.length<currentIdx+12)genProc();
 
@@ -957,11 +961,11 @@ function update(dt){
     if(player.x+HW<p.x||player.x-HW>p.x+p.w)continue;
     if(player.vy>=0&&foot0<=p.y+6+(p.dy<0?-p.dy:0)&&player.y>=p.y){if(!best||p.y<best.y)best=p}
   }
-  if(echo&&player.vy>=0&&foot0<=echo.y+6&&player.y>=echo.y&&player.x+HW>=echo.x&&player.x-HW<=echo.x+echo.w&&(!best||echo.y<best.y)){
-    player.y=echo.y;player.vy=0;player.grounded=true;player.coyote=COYOTE;
+  if(Evolution&&player.vy>=0&&foot0<=Evolution.y+6&&player.y>=Evolution.y&&player.x+HW>=Evolution.x&&player.x-HW<=Evolution.x+Evolution.w&&(!best||Evolution.y<best.y)){
+    player.y=Evolution.y;player.vy=0;player.grounded=true;player.coyote=COYOTE;
   }
   if(best){
-    echoReady=true;
+    EvolutionReady=true;
     player.y=best.y;player.vy=0;player.grounded=true;player.coyote=COYOTE;player.on=best;
     if(best.i>currentIdx){currentIdx=best.i;updHUD()}
     if(cfg.mode==='camp'){if(best.cp&&best.i>cpIdx){cpIdx=best.i;best.act=true;S.cp();sparkle(best.x,best.y,best.w,'120,255,170')}}
@@ -1004,8 +1008,9 @@ function winUpdate(dt){
 }
 function step_(dt){
   T+=dt;
-  for(let pi=cfg.mode==='tower'?Math.max(0,currentIdx-90):0;pi<platforms.length;pi++){
+  for(let pi=Math.max(0,currentIdx-90);pi<platforms.length;pi++){
     const p=platforms[pi];
+    if(p.gone&&p.t!=='crumble')continue;
     const tv=!silent||Math.abs(p.i-currentIdx)<=2||(state!=='play'&&p.i<=2)?1:0;
     if(tv&&!p.tv&&silent&&state==='play'){S.mat();sparkle(p.x,p.y,p.w)}
     p.tv=tv;p.vis+=(tv-p.vis)*(1-Math.exp(-(tv?7:5)*dt));if(tv&&p.vis>.995)p.vis=1;
@@ -1036,7 +1041,7 @@ const TOPS={grow:['#9dffc0','#28a965'],phase0:['#83f3ff','#268bb8'],phase1:['#ff
 function drawPlatform(p){
   if(p.vis<=.01)return;
   let a=clamp(p.vis,0,1),oy=(1-a)*50,ox=0,rot=0;
-  if(p.gone){oy+=p.fall*p.fall*700;a*=Math.max(0,1-p.fall/.8);rot=p.fall*.4*(p.i%2?1:-1);if(a<=0)return}
+  if(p.gone){oy+=p.fall*p.fall*700;a*=Math.max(0,1-p.fall/.45);rot=p.fall*.4*(p.i%2?1:-1);if(a<=0)return}
   else if(p.cr>0)ox=(Math.random()-.5)*4*(p.cr/.6+.3);
   const sx=SX(p.x)+ox,sy=SY(p.y)+oy;
   if(sx+p.w<-120||sx>W+120)return;
@@ -1108,9 +1113,9 @@ function render(){
   ctx.save();ctx.translate(shx,shy);
   const lo=Math.max(0,currentIdx-12),hi=Math.min(platforms.length,currentIdx+14);
   for(let i=lo;i<hi;i++)drawPlatform(platforms[i]);
-  if(echo){ctx.globalAlpha=Math.min(1,echo.life*2);ctx.fillStyle='#bceaff';rrc(ctx,SX(echo.x),SY(echo.y),echo.w,8,4);ctx.fill();ctx.globalAlpha=1}
+  if(Evolution){ctx.globalAlpha=Math.min(1,Evolution.life*2);ctx.fillStyle='#bceaff';rrc(ctx,SX(Evolution.x),SY(Evolution.y),Evolution.w,8,4);ctx.fill();ctx.globalAlpha=1}
   drawCoins();ctx.restore();
-  if(state==='play'&&cfg.mode==='camp'&&cfg.level>=6){ctx.fillStyle='#d4eeff';ctx.font='12px Rubik,sans-serif';ctx.fillText('E · ФАЗА '+(phase?'II':'I')+'   Q · ЭХО '+(echoReady?'ГОТОВО':'ИСПОЛЬЗОВАНО'),16,H-50)}
+  if(state==='play'&&cfg.mode==='camp'&&cfg.level>=6){ctx.fillStyle='#d4eeff';ctx.font='12px Rubik,sans-serif';ctx.fillText('E · ФАЗА '+(phase?'II':'I')+'   Q · Облако '+(EvolutionReady?'ГОТОВО':'ИСПОЛЬЗОВАНО'),16,H-50)}
   ctx.save();ctx.globalCompositeOperation='lighter';
   const span=Math.max(W+300,1800);
   for(const f of flies){const x=mod(f.u*span-camX*.45+T*f.sp*6,span)-150,y=H*.5+f.v*H*.4+Math.sin(T*f.ph+f.u*9)*f.amp;const s=Math.sin(T*f.sp*1.4+f.ph);
@@ -1150,3 +1155,4 @@ requestAnimationFrame(frame);
 </script>
 </body>
 </html>
+
