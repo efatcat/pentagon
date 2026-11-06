@@ -513,7 +513,7 @@
     </footer>
   </main>
 
-  <!-- ===== ПОЛНОЭКРАННАЯ ПАСХАЛКА: Ицуми ===== -->
+  <!-- ===== ПОЛНОЭКРАННАЯ ПАСХАЛКА: ИЦУМИ / ITSUMI ===== -->
   <div class="mascot-overlay" id="mascotOverlay" role="dialog" aria-modal="true" aria-labelledby="mascotName">
     <div class="mascot-card">
       <div class="mascot-figure">
@@ -521,11 +521,12 @@
           class="mascot-img"
           src="https://efatcat.github.io/pentagon/pentagonchan.png"
           alt="Ицуми"
+          data-i18n-alt="mascot-name"
           onerror="this.style.display='none'"
         />
       </div>
 
-      <h2 class="mascot-name" id="mascotName">Ицуми</h2>
+      <h2 class="mascot-name" id="mascotName" data-i18n="mascot-name">Ицуми</h2>
 
       <p class="mascot-desc" data-i18n="mascot-desc">
         Ицуми — официальный маскот игры <strong>Pentagon</strong>, созданный студией <strong>5Architecture</strong>.
@@ -544,6 +545,7 @@
         v1pr13lite: 'Pentagon 1.PR13 Lite',
         v1pr13: 'Pentagon 1.PR13',
         'footer-prefix': 'Разработано',
+        'mascot-name': 'Ицуми',
         'mascot-desc': 'Ицуми — официальный маскот игры Pentagon, созданный студией 5Architecture.',
         'mascot-close': 'Закрыть'
       },
@@ -554,6 +556,7 @@
         v1pr13lite: 'Pentagon 1.PR13 Lite',
         v1pr13: 'Pentagon 1.PR13',
         'footer-prefix': 'Developed by',
+        'mascot-name': 'Itsumi',
         'mascot-desc': 'Itsumi is the official mascot of Pentagon, created by 5Architecture.',
         'mascot-close': 'Close'
       }
@@ -561,15 +564,25 @@
 
     const langButtons = document.querySelectorAll('.lang-btn');
     const i18nElements = document.querySelectorAll('[data-i18n]');
+    const i18nAltElements = document.querySelectorAll('[data-i18n-alt]');
 
     function setLanguage(lang) {
       const dict = translations[lang];
       if (!dict) return;
 
+      // Текстовые элементы
       i18nElements.forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (dict[key] !== undefined) {
           el.textContent = dict[key];
+        }
+      });
+
+      // alt-атрибуты (например, у картинки маскота)
+      i18nAltElements.forEach(el => {
+        const key = el.getAttribute('data-i18n-alt');
+        if (dict[key] !== undefined) {
+          el.setAttribute('alt', dict[key]);
         }
       });
 
