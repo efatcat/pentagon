@@ -626,11 +626,49 @@ let platforms=[],coins=[],currentIdx=0,cpIdx=0,runCoins=0,totalCoins=0;
 let time=0,falls=0,T=0,gt=0,sh=0,camX=0,camY=0;
 const parts=[];let stepTimer=0;
 let phase=0,Evolution=null,EvolutionReady=true;
+let cloudAllowed=true;
 function solid(p){return !((p.t==='phase0'&&phase!==0)||(p.t==='phase1'&&phase!==1))}
+
+/* Ищет ближайшую впереди платформу относительно игрока (по возрастанию i, начиная с currentIdx). */
+function nextPlatformAhead(){
+  const start=Math.max(0,currentIdx);
+  for(let i=start;i<platforms.length;i++){
+    const p=platforms[i];
+    if(p.gone)continue;
+    if(p.x+p.w>player.x+2)return p;
+  }
+  return null;
+}
+
+/* Облако-заряд доступен, только если:
+   - впереди нет фазовой платформы;
+   - впереди есть платформа charge/grow или разрыв больше ~260 px.
+   На остальных уровнях/мирах он отключён. */
+function computeCloudAllowed(){
+  if(state!=='play')return false;
+  if(!cfg)return false;
+  if(cfg.mode!=='camp'&&cfg.mode!=='Evolution')return false;
+  if(cfg.mode==='camp'&&cfg.level<11)return false;
+  const p=nextPlatformAhead();
+  if(!p)return false;
+  if(p.t==='phase0'||p.t==='phase1')return false;
+  for(let i=Math.max(0,currentIdx);i<platforms.length;i++){
+    const q=platforms[i];
+    if(q.gone)continue;
+    if(q.t==='charge'||q.t==='grow')return true;
+    if(q.x+q.w>player.x+400)break;
+  }
+  if(p.x-player.x>260)return true;
+  return false;
+}
+
 function usePower(kind){
  if(state!=='play'||!['camp','Evolution'].includes(cfg.mode))return;
  if(kind==='phase'){phase=1-phase;S.mat();toast('Фаза '+(phase?'II · розовая':'I · голубая'));if(player.on&&!solid(player.on)){player.on=null;player.grounded=false;player.coyote=0}}
- if(kind==='Evolution'&&!player.grounded&&EvolutionReady){EvolutionReady=false;Evolution={x:player.x-55,y:player.y+18,w:110,life:1.4};S.mat();sparkle(Evolution.x,Evolution.y,Evolution.w,'170,220,255')}
+ if(kind==='Evolution'){
+   if(!cloudAllowed){toast('Облако-заряд недоступен здесь');return}
+   if(!player.grounded&&EvolutionReady){EvolutionReady=false;Evolution={x:player.x-55,y:player.y+18,w:110,life:1.4};S.mat();sparkle(Evolution.x,Evolution.y,Evolution.w,'170,220,255')}
+ }
 }
 const player={x:0,y:0,vx:0,vy:0,sx:1,sy:1,face:1,grounded:false,coyote:0,jbuf:0,inv:0,blinkT:3,run:0,on:null};
 
@@ -705,7 +743,7 @@ function genProc(){
 
 function startRun(c){
   if(c.mode==='tower')c=Object.assign({},c,{len:0,silent:false});
-  cfg=c;parts.length=0;platforms=[];coins=[];phase=0;Evolution=null;EvolutionReady=true;
+  cfg=c;parts.length=0;platforms=[];coins=[];phase=0;Evolution=null;EvolutionReady=true;cloudAllowed=false;
   currentIdx=0;cpIdx=0;time=0;falls=0;runCoins=0;gt=0;
   if(c.mode==='camp'){
     const L=LEVELS[c.level];silent=!!L.silent;seed=hashStr(L.name);TH=THEMES[L.theme];buildCampaign(L);len=platforms.length;
@@ -721,6 +759,7 @@ function startRun(c){
   $('silentTag').style.display=silent?'block':'none';
   $('fLbl').textContent=len?'ПАДЕНИЯ':'РЕКОРД';
   lastPC=-1;updHUD();
+  cloudAllowed=computeCloudAllowed();
 }
 function spawnAt(idx){
   const p=platforms[idx];
@@ -728,6 +767,7 @@ function spawnAt(idx){
   player.coyote=COYOTE;player.jbuf=0;player.springing=false;
   player.x=p.x+Math.min(60,p.w/2);player.y=p.y;player.vx=0;player.vy=0;player.sx=1;player.sy=1;player.face=1;
   player.grounded=true;player.on=p;player.inv=idx?1.2:0;
+  cloudAllowed=computeCloudAllowed();
 }
 
 /* ============ HUD ============ */
@@ -935,6 +975,7 @@ $('muteBtn').addEventListener('click',function(){wakeAudio();toggleMute();this.b
 /* ============ физика ============ */
 function update(dt){
   gt+=dt;
+  cloudAllowed=computeCloudAllowed();
   if(Evolution){Evolution.life-=dt;if(Evolution.life<=0)Evolution=null}
   for(const p of platforms){
     if(p.gone||p.i<currentIdx-90)continue;
@@ -1128,7 +1169,11 @@ function render(){
   for(let i=lo;i<hi;i++)drawPlatform(platforms[i]);
   if(Evolution){ctx.globalAlpha=Math.min(1,Evolution.life*2);ctx.fillStyle='#bceaff';rrc(ctx,SX(Evolution.x),SY(Evolution.y),Evolution.w,8,4);ctx.fill();ctx.globalAlpha=1}
   drawCoins();ctx.restore();
-  if(state==='play'&&cfg.mode==='camp'&&cfg.level>=6){ctx.fillStyle='#d4eeff';ctx.font='12px Rubik,sans-serif';ctx.fillText('E · ФАЗА '+(phase?'II':'I')+'   Q · Облако '+(EvolutionReady?'ГОТОВО':'ИСПОЛЬЗОВАНО'),16,H-50)}
+  if(state==='play'&&cfg.mode==='camp'&&cfg.level>=6){
+    const cloudLabel=cloudAllowed?'ОБЛАКО '+(EvolutionReady?'ГОТОВО':'ИСПОЛЬЗОВАНО'):'ОБЛАКО НЕДОСТУПНО';
+    ctx.fillStyle=cloudAllowed?'#d4eeff':'rgba(212,238,255,.55)';ctx.font='12px Rubik,sans-serif';
+    ctx.fillText('E · ФАЗА '+(phase?'II':'I')+'   Q · '+cloudLabel,16,H-50);
+  }
   ctx.save();ctx.globalCompositeOperation='lighter';
   const span=Math.max(W+300,1800);
   for(const f of flies){const x=mod(f.u*span-camX*.45+T*f.sp*6,span)-150,y=H*.5+f.v*H*.4+Math.sin(T*f.ph+f.u*9)*f.amp;const s=Math.sin(T*f.sp*1.4+f.ph);
