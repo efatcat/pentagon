@@ -29,6 +29,12 @@
     --border-soft: rgba(255, 255, 255, 0.25);
     --frame-line: rgba(255, 255, 255, 0.12);
     --corner: #fff;
+
+    /* Mango accent for the new version */
+    --mango-yellow: #ffd93d;
+    --mango-orange: #ff8c1a;
+    --mango-coral: #ff6b4a;
+    --mango-pink: #ff4d6d;
   }
 
   /* Тема при открытом маскоте — белая */
@@ -43,6 +49,10 @@
     --corner: #000;
   }
 
+  html, body {
+    min-height: 100%;
+  }
+
   body {
     background-color: var(--bg);
     color: var(--fg);
@@ -52,8 +62,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
-    padding: 2rem;
+    padding: 5rem 2rem 5rem;
     transition: background-color 0.45s ease, color 0.45s ease;
   }
 
@@ -138,16 +147,6 @@
     animation: fadeUp 1.2s ease-out 0.15s both;
   }
 
-  .tagline {
-    margin-top: 1rem;
-    font-size: clamp(0.6rem, 1.4vw, 0.8rem);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-    font-weight: 300;
-    animation: fadeUp 1.2s ease-out 0.3s both;
-  }
-
   /* Кнопки версий */
   .menu {
     margin-top: 2.5rem;
@@ -174,7 +173,7 @@
     letter-spacing: 0.05em;
     text-decoration: none;
     cursor: pointer;
-    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
   }
 
   .btn:hover,
@@ -195,10 +194,12 @@
     align-items: flex-start;
     gap: 0.15rem;
     text-align: left;
+    min-width: 0;
   }
 
   .btn .name {
     font-weight: 500;
+    overflow-wrap: anywhere;
   }
 
   .btn .index {
@@ -234,15 +235,80 @@
     color: var(--bg);
   }
 
-  .btn .badge.test {
-    border-color: var(--fg);
-    color: var(--fg);
+  /* ===== НОВАЯ ВЕРСИЯ 13-bugofix — яркая манго-карточка ===== */
+  .btn.hero {
+    position: relative;
+    border: none;
+    color: #2a1400;
+    background: linear-gradient(135deg, var(--mango-yellow), var(--mango-orange) 55%, var(--mango-coral));
+    box-shadow:
+      0 12px 40px rgba(255, 140, 26, 0.45),
+      0 0 0 1px rgba(255, 210, 63, 0.35) inset,
+      0 0 60px rgba(255, 140, 26, 0.25);
+    animation: heroPulse 2.6s ease-in-out infinite, fadeUp 1.2s ease-out 0.4s both;
+    overflow: hidden;
   }
 
-  .btn:hover .badge.test,
-  .btn:focus .badge.test {
-    border-color: var(--bg);
-    color: var(--bg);
+  .btn.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.35) 50%, transparent 80%);
+    transform: translateX(-120%);
+    animation: heroShine 3.4s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .btn.hero:hover,
+  .btn.hero:focus {
+    transform: translateY(-2px) scale(1.015);
+    color: #2a1400;
+    background: linear-gradient(135deg, #ffe066, var(--mango-orange) 55%, var(--mango-pink));
+    box-shadow:
+      0 18px 55px rgba(255, 140, 26, 0.65),
+      0 0 0 1px rgba(255, 210, 63, 0.55) inset,
+      0 0 80px rgba(255, 140, 26, 0.45);
+  }
+
+  .btn.hero .index {
+    color: rgba(42, 20, 0, 0.7);
+  }
+
+  .btn.hero:hover .index,
+  .btn.hero:focus .index {
+    color: rgba(42, 20, 0, 0.85);
+    opacity: 1;
+  }
+
+  .btn.hero .name {
+    font-weight: 700;
+  }
+
+  .btn.hero .badge.hotfix {
+    background: #2a1400;
+    color: var(--mango-yellow);
+    border-color: #2a1400;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    box-shadow: 0 0 14px rgba(42, 20, 0, 0.35);
+  }
+
+  .btn.hero:hover .badge.hotfix,
+  .btn.hero:focus .badge.hotfix {
+    background: #2a1400;
+    color: #ffe066;
+    border-color: #2a1400;
+  }
+
+  @keyframes heroPulse {
+    0%, 100% { box-shadow: 0 12px 40px rgba(255,140,26,.45), 0 0 0 1px rgba(255,210,63,.35) inset, 0 0 60px rgba(255,140,26,.25); }
+    50%      { box-shadow: 0 16px 50px rgba(255,140,26,.65), 0 0 0 1px rgba(255,210,63,.55) inset, 0 0 90px rgba(255,140,26,.45); }
+  }
+
+  @keyframes heroShine {
+    0%   { transform: translateX(-120%); }
+    55%  { transform: translateX(120%); }
+    100% { transform: translateX(120%); }
   }
 
   /* Подвал — студия */
@@ -275,7 +341,7 @@
     inset: 20px;
     border: 1px solid var(--frame-line);
     pointer-events: none;
-    z-index: 1;
+    z-index: 50;
     transition: border-color 0.45s ease;
   }
 
@@ -287,7 +353,7 @@
     border-color: var(--corner);
     border-style: solid;
     opacity: 0.5;
-    z-index: 1;
+    z-index: 51;
     transition: border-color 0.45s ease;
   }
   .corner.tl { top: 40px; left: 40px; border-width: 1px 0 0 1px; }
@@ -417,6 +483,7 @@
   }
 
   @media (max-width: 520px) {
+    body { padding: 4.5rem 1.2rem 4.5rem; }
     .lang-switch {
       top: 28px;
       right: 28px;
@@ -433,6 +500,15 @@
 
   @media (max-width: 400px) {
     .btn .badge { display: none; }
+    .btn.hero .badge.hotfix { display: inline-block; }
+    body { padding: 4rem 1rem 4rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn.hero,
+    .btn.hero::after {
+      animation: none !important;
+    }
   }
 </style>
 </head>
@@ -461,23 +537,37 @@
 
     <!-- Название игры -->
     <h1 class="game-title">Pentagon</h1>
-    <p class="tagline" data-i18n="tagline">Платформер-наследник Qubes и Amber Run</p>
 
     <!-- Версии игры: от новых к старым -->
     <nav class="menu" aria-label="Версии игры">
+      <!-- НОВЕЙШАЯ: 13 Bugofix — яркая манго-карточка -->
       <a
-        href="https://efatcat.github.io/pentagon/1pr13"
+        href="https://efatcat.github.io/pentagon/13-bugofix"
+        class="btn hero"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="label">
+          <span class="name" data-i18n="v13bugofix">Pentagon 13 Bugofix</span>
+          <span class="index">13-bugofix</span>
+        </span>
+        <span class="badge hotfix" data-i18n="badge-new">New</span>
+      </a>
+
+      <!-- Обычная 13 -->
+      <a
+        href="https://efatcat.github.io/pentagon/13"
         class="btn primary"
         target="_blank"
         rel="noopener"
       >
         <span class="label">
-          <span class="name" data-i18n="v1pr13">Pentagon 1.PR13</span>
-          <span class="index">1.PR13</span>
+          <span class="name" data-i18n="v13">Pentagon 13</span>
+          <span class="index">13</span>
         </span>
-        <span class="badge">New</span>
       </a>
 
+      <!-- Lite -->
       <a
         href="https://efatcat.github.io/1pr13lite"
         class="btn"
@@ -485,12 +575,25 @@
         rel="noopener"
       >
         <span class="label">
-          <span class="name" data-i18n="v1pr13lite">Pentagon 1.PR13 Lite</span>
-          <span class="index">1.PR13.E1</span>
+          <span class="name" data-i18n="v13lite">Pentagon 13 Lite</span>
+          <span class="index">13-lite</span>
         </span>
-        <span class="badge">Lite</span>
       </a>
 
+      <!-- 50X от Spectral Studios -->
+      <a
+        href="https://3dacat.github.io/pentagon50X"
+        class="btn"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="label">
+          <span class="name" data-i18n="v50x">Pentagon 50X by Spectral Studios</span>
+          <span class="index">50X</span>
+        </span>
+      </a>
+
+      <!-- Самая старая: 40 Test Drive -->
       <a
         href="https://efatcat.github.io/pentagon40"
         class="btn"
@@ -498,10 +601,9 @@
         rel="noopener"
       >
         <span class="label">
-          <span class="name" data-i18n="v40">Pentagon40 Test Drive</span>
-          <span class="index">0.PR1</span>
+          <span class="name" data-i18n="v40">Pentagon 40 Test Drive</span>
+          <span class="index">40</span>
         </span>
-        <span class="badge test" data-i18n="badge-test">Тест</span>
       </a>
     </nav>
 
@@ -539,22 +641,24 @@
   <script>
     const translations = {
       ru: {
-        tagline: 'Платформер-наследник Qubes и Amber Run',
-        v40: 'Pentagon40 Test Drive',
-        'badge-test': 'Тест',
-        v1pr13lite: 'Pentagon 1.PR13 Lite',
-        v1pr13: 'Pentagon 1.PR13',
+        v13bugofix: 'Pentagon 13 Bugofix',
+        'badge-new': 'New',
+        v13: 'Pentagon 13',
+        v13lite: 'Pentagon 13 Lite',
+        v40: 'Pentagon 40 Test Drive',
+        v50x: 'Pentagon 50X by Spectral Studios',
         'footer-prefix': 'Разработано',
         'mascot-name': 'Ицуми',
         'mascot-desc': 'Ицуми — официальный маскот игры Pentagon, созданный студией 5Architecture.',
         'mascot-close': 'Закрыть'
       },
       en: {
-        tagline: 'Platformer successor to Qubes and Amber Run',
-        v40: 'Pentagon40 Test Drive',
-        'badge-test': 'Test',
-        v1pr13lite: 'Pentagon 1.PR13 Lite',
-        v1pr13: 'Pentagon 1.PR13',
+        v13bugofix: 'Pentagon 13 Bugofix',
+        'badge-new': 'New',
+        v13: 'Pentagon 13',
+        v13lite: 'Pentagon 13 Lite',
+        v40: 'Pentagon 40 Test Drive',
+        v50x: 'Pentagon 50X by Spectral Studios',
         'footer-prefix': 'Developed by',
         'mascot-name': 'Itsumi',
         'mascot-desc': 'Itsumi is the official mascot of Pentagon, created by 5Architecture.',
@@ -570,7 +674,6 @@
       const dict = translations[lang];
       if (!dict) return;
 
-      // Текстовые элементы
       i18nElements.forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (dict[key] !== undefined) {
@@ -578,7 +681,6 @@
         }
       });
 
-      // alt-атрибуты (например, у картинки маскота)
       i18nAltElements.forEach(el => {
         const key = el.getAttribute('data-i18n-alt');
         if (dict[key] !== undefined) {
@@ -614,14 +716,14 @@
     const closeBtn = document.getElementById('mascotClose');
 
     function openMascot() {
-      document.body.classList.add('mascot-theme'); // белая тема
+      document.body.classList.add('mascot-theme');
       overlay.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
 
     function closeMascot() {
       overlay.classList.remove('open');
-      document.body.classList.remove('mascot-theme'); // обратно чёрная
+      document.body.classList.remove('mascot-theme');
       document.body.style.overflow = '';
     }
 
@@ -633,14 +735,12 @@
 
       closeBtn.addEventListener('click', closeMascot);
 
-      // Клик по фону вне карточки закрывает
       overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
           closeMascot();
         }
       });
 
-      // Esc закрывает
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && overlay.classList.contains('open')) {
           closeMascot();
